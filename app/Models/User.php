@@ -110,10 +110,10 @@ class User extends Authenticatable implements HasMedia
     /**
      * Route notifications for the FCM channel.
      *
-     * @param \Illuminate\Notifications\Notification $notification
+     *
      * @return string|null
      */
-    public function routeNotificationForFcm(\Illuminate\Notifications\Notification $notification): ?string
+    public function routeNotificationForFcm(): ?string
     {
         return $this->device_token;
     }

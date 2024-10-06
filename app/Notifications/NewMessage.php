@@ -84,14 +84,19 @@ class NewMessage extends Notification
         $notification = [
             'title' => $this->user->name . " " . __("lang.notification_sent_new_message"),
             'body' => $this->text,
+        ];
+        $data = [
             'icon' => $this->getUserAvatarUrl(),
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",
             'id' => 'App\\Notifications\\NewMessage',
             'status' => 'done',
+            'messageId' => (string) $this->messageId,
         ];
-        $data = $notification;
-        $data['messageId'] = $this->messageId;
         $message->content($notification)->data($data)->priority(FcmMessage::PRIORITY_HIGH);
+
+        if ($to = $notifiable->routeNotificationFor('fcm', $this)) {
+            $message->to($to);
+        }
         return $message;
     }
 

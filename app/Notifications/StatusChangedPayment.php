@@ -43,10 +43,10 @@ class StatusChangedPayment extends Notification
     {
         $types = ['database'];
         if (setting('enable_notifications', false)) {
-            array_push($types, 'fcm');
+            $types[] = 'fcm';
         }
         if (setting('enable_email_notifications', false)) {
-            array_push($types, 'mail');
+            $types[] = 'mail';
         }
         return $types;
     }
@@ -72,15 +72,20 @@ class StatusChangedPayment extends Notification
         $notification = [
             'body' => trans('lang.notification_payment', ['appointment_id' => $this->appointment->id, 'payment_status' => $this->appointment->payment->paymentStatus->status]),
             'title' => trans('lang.notification_status_changed_payment'),
+
+        ];
+        $data = [
             'icon' => $this->getDoctorMediaUrl(),
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",
             'id' => 'App\\Notifications\\StatusChangedPayment',
             'status' => 'done',
+            'appointmentId' => (string) $this->appointment->id,
         ];
-        $data = $notification;
-        $data['appointmentId'] = $this->appointment->id;
         $message->content($notification)->data($data)->priority(FcmMessage::PRIORITY_HIGH);
 
+        if ($to = $notifiable->routeNotificationFor('fcm', $this)) {
+            $message->to($to);
+        }
         return $message;
     }
 

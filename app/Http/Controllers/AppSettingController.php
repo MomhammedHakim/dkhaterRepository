@@ -81,6 +81,12 @@ class AppSettingController extends Controller
             if (empty($input['mail_password'])) {
                 unset($input['mail_password']);
             }
+            if ($request->hasFile('firebase_credentials')) {
+                try {
+                    $request->file('firebase_credentials')->storeAs('fcm', 'firebase_credentials.json');
+                } catch (\Exception $e) {
+                }
+            }
             $input = array_map(function ($value) {
                 return is_null($value) ? false : $value;
             }, $input);

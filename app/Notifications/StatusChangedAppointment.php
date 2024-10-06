@@ -72,15 +72,20 @@ class StatusChangedAppointment extends Notification
         $notification = [
             'title' => trans('lang.notification_status_changed_appointment'),
             'body' => trans('lang.notification_your_appointment', ['appointment_id' => $this->appointment->id, 'appointment_status' => $this->appointment->appointmentStatus->status]),
+
+        ];
+        $data = [
             'icon' => $this->getDoctorMediaUrl(),
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",
             'id' => 'App\\Notifications\\StatusChangedAppointment',
             'status' => 'done',
+            'appointmentId' => (string) $this->appointment->id,
         ];
-        $data = $notification;
-        $data['appointmentId'] = $this->appointment->id;
         $message->content($notification)->data($data)->priority(FcmMessage::PRIORITY_HIGH);
 
+        if ($to = $notifiable->routeNotificationFor('fcm', $this)) {
+            $message->to($to);
+        }
         return $message;
     }
 

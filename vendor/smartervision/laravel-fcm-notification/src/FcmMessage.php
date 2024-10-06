@@ -14,14 +14,17 @@ class FcmMessage
      * @var string|array
      */
     private $to;
+
     /**
      * @var array
      */
     private $notification;
+
     /**
      * @var array
      */
     private $data;
+
     /**
      * @var string normal|high
      */
@@ -38,34 +41,14 @@ class FcmMessage
     private $collapseKey;
 
     /**
-     * @var bool
-     */
-    private $contentAvailable;
-
-    /**
-     * @var bool
-     */
-    private $mutableContent;
-
-    /**
      * @var int
      */
     private $timeToLive;
 
     /**
-     * @var bool
-     */
-    private $dryRun;
-
-    /**
      * @var string
      */
     private $packageName;
-
-    /**
-     * @var array
-     */
-    private $headers = [];
 
     /**
      * @param string|array $recipient
@@ -75,9 +58,7 @@ class FcmMessage
     public function to($recipient, $recipientIsTopic = false)
     {
         if ($recipientIsTopic && is_string($recipient)) {
-            $this->to = '/topics/'.$recipient;
-        } elseif (is_array($recipient) && count($recipient) == 1) {
-            $this->to = $recipient[0];
+            $this->to = '/topics/' . $recipient;
         } else {
             $this->to = $recipient;
         }
@@ -166,44 +147,6 @@ class FcmMessage
     }
 
     /**
-     * @return bool
-     */
-    public function isContentAvailable()
-    {
-        return $this->contentAvailable;
-    }
-
-    /**
-     * @param bool $contentAvailable
-     * @return $this
-     */
-    public function contentAvailable($contentAvailable)
-    {
-        $this->contentAvailable = $contentAvailable;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMutableContent()
-    {
-        return $this->mutableContent;
-    }
-
-    /**
-     * @param bool $mutableContent
-     * @return $this
-     */
-    public function mutableContent($mutableContent)
-    {
-        $this->mutableContent = $mutableContent;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getTimeToLive()
@@ -223,113 +166,25 @@ class FcmMessage
     }
 
     /**
-     * @return bool
-     */
-    public function isDryRun()
-    {
-        return $this->dryRun;
-    }
-
-    /**
-     * @param bool $dryRun
-     * @return $this
-     */
-    public function dryRun($dryRun)
-    {
-        $this->dryRun = $dryRun;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPackageName()
-    {
-        return $this->packageName;
-    }
-
-    /**
-     * @param string $packageName
-     * @return $this
-     */
-    public function packageName($packageName)
-    {
-        $this->packageName = $packageName;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function formatData()
     {
         $payload = [
-            'priority' => $this->priority,
+            'message' => [
+                'token' => $this->to,
+                'notification' => [
+                    'title' => $this->notification['title'],
+                    'body' => $this->notification['body'],
+                ],
+                'data' => $this->data,
+                'android' => [
+                    'notification' => [
+                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                    ],
+                ],
+            ],
         ];
-
-        if (is_array($this->to)) {
-            $payload['registration_ids'] = $this->to;
-        } elseif (! empty($this->to)) {
-            $payload['to'] = $this->to;
-        }
-
-        if (isset($this->data) && count($this->data)) {
-            $payload['data'] = $this->data;
-        }
-
-        if (isset($this->notification) && count($this->notification)) {
-            $payload['notification'] = $this->notification;
-        }
-
-        if (isset($this->condition) && ! empty($this->condition)) {
-            $payload['condition'] = $this->condition;
-        }
-
-        if (isset($this->collapseKey) && ! empty($this->collapseKey)) {
-            $payload['collapse_key'] = $this->collapseKey;
-        }
-
-        if (isset($this->contentAvailable)) {
-            $payload['content_available'] = $this->contentAvailable;
-        }
-
-        if (isset($this->mutableContent)) {
-            $payload['mutable_content'] = $this->mutableContent;
-        }
-
-        if (isset($this->timeToLive)) {
-            $payload['time_to_live'] = $this->timeToLive;
-        }
-
-        if (isset($this->dryRun)) {
-            $payload['dry_run'] = $this->dryRun;
-        }
-
-        if (isset($this->packageName) && ! empty($this->packageName)) {
-            $payload['restricted_package_name'] = $this->packageName;
-        }
-
         return \GuzzleHttp\json_encode($payload);
-    }
-
-    /**
-     * @param array $headers
-     * @return $this
-     */
-    public function setHeaders($headers = [])
-    {
-        $this->headers = $headers;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
     }
 }

@@ -74,5 +74,7 @@ return [
 
     'fcm' => [
         'key' => '',
+        'service_account' => storage_path('app/fcm/firebase_credentials.json'),
+        'project_id' => '',
     ]
 ];

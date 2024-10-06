@@ -73,15 +73,19 @@ class NewAppointment extends Notification
         $notification = [
             'title' => $this->appointment->doctor->name,
             'body' => trans('lang.notification_new_appointment', ['appointment_id' => $this->appointment->id, 'user_name' => $this->appointment->user->name]),
+        ];
+        $data = [
+            'id' => 'App\\Notifications\\NewAppointment',
             'icon' => $this->getDoctorMediaUrl(),
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",
-            'id' => 'App\\Notifications\\NewAppointment',
             'status' => 'done',
+            'appointmentId' => (string) $this->appointment->id,
         ];
-        $data = $notification;
-        $data['appointmentId'] = $this->appointment->id;
         $message->content($notification)->data($data)->priority(FcmMessage::PRIORITY_HIGH);
 
+        if ($to = $notifiable->routeNotificationFor('fcm', $this)) {
+            $message->to($to);
+        }
         return $message;
     }
 

@@ -24,26 +24,16 @@
             </ul>
         </div>
         <div class="card-body">
-            {!! Form::open(['url' => ['settings/update'], 'method' => 'patch']) !!}
+            {!! Form::open(['url' => ['settings/update'], 'method' => 'patch', 'enctype' => 'multipart/form-data']) !!}
             <div class="row">
                 <h5 class="col-12 pb-4"><i class="mr-3 fas fa-bell"></i>{!! trans('lang.app_setting_notifications') !!}</h5>
-                <!-- 'Boolean enable_facebook Field' -->
+                <!-- 'Boolean enable_notifications Field' -->
                 <div class="form-group row col-12">
-                    {!! Form::label('enable_notifications', trans("lang.app_setting_enable_notifications"),['class' => 'col-2 control-label text-right']) !!}
-                    {!! Form::hidden('enable_notifications', 0, ['id'=>"hidden_enable_notifications"]) !!}
-                    <div class="col-10 icheck-{{setting('theme_color')}}">
+                    {!! Form::label('enable_notifications', trans("lang.app_setting_enable_notifications"), ['class' => 'col-2 control-label text-right']) !!}
+                    {!! Form::hidden('enable_notifications', 0, ['id' => "hidden_enable_notifications"]) !!}
+                    <div class="col-10 icheck-{{ setting('theme_color') }}">
                         {!! Form::checkbox('enable_notifications', 1, setting('enable_notifications', false)) !!}
                         <label for="enable_notifications">{!! trans("lang.app_setting_enable_notifications_help") !!}</label>
-                    </div>
-                </div>
-                <!-- facebook_app_id Field -->
-                <div class="form-group row col-12">
-                    {!! Form::label('fcm_key', trans('lang.app_setting_fcm_key'), ['class' => 'col-2 control-label text-right']) !!}
-                    <div class="col-10">
-                        {!! Form::text('fcm_key', setting('fcm_key'),  ['class' => 'form-control','placeholder'=>  trans('lang.app_setting_fcm_key_placeholder')]) !!}
-                        <div class="form-text text-muted">
-                            {!! trans('lang.app_setting_fcm_key_help') !!}
-                        </div>
                     </div>
                 </div>
 
@@ -51,7 +41,7 @@
                 <div class="form-group row col-6">
                     {!! Form::label('firebase_api_key', trans('lang.app_setting_firebase_api_key'), ['class' => 'col-4 control-label text-right']) !!}
                     <div class="col-8">
-                        {!! Form::text('firebase_api_key', setting('firebase_api_key'),  ['class' => 'form-control','placeholder'=>  trans('lang.app_setting_firebase_api_key_placeholder')]) !!}
+                        {!! Form::text('firebase_api_key', setting('firebase_api_key'), ['class' => 'form-control', 'placeholder' => trans('lang.app_setting_firebase_api_key_placeholder')]) !!}
                         <div class="form-text text-muted">
                             {!! trans('lang.app_setting_firebase_api_key_help') !!}
                         </div>
@@ -62,7 +52,7 @@
                 <div class="form-group row col-6">
                     {!! Form::label('firebase_auth_domain', trans('lang.app_setting_firebase_auth_domain'), ['class' => 'col-4 control-label text-right']) !!}
                     <div class="col-8">
-                        {!! Form::text('firebase_auth_domain', setting('firebase_auth_domain'),  ['class' => 'form-control','placeholder'=>  trans('lang.app_setting_firebase_auth_domain_placeholder')]) !!}
+                        {!! Form::text('firebase_auth_domain', setting('firebase_auth_domain'), ['class' => 'form-control', 'placeholder' => trans('lang.app_setting_firebase_auth_domain_placeholder')]) !!}
                         <div class="form-text text-muted">
                             {!! trans('lang.app_setting_firebase_auth_domain_help') !!}
                         </div>
@@ -73,7 +63,7 @@
                 <div class="form-group row col-6">
                     {!! Form::label('firebase_database_url', trans('lang.app_setting_firebase_database_url'), ['class' => 'col-4 control-label text-right']) !!}
                     <div class="col-8">
-                        {!! Form::text('firebase_database_url', setting('firebase_database_url'),  ['class' => 'form-control','placeholder'=>  trans('lang.app_setting_firebase_database_url_placeholder')]) !!}
+                        {!! Form::text('firebase_database_url', setting('firebase_database_url'), ['class' => 'form-control', 'placeholder' => trans('lang.app_setting_firebase_database_url_placeholder')]) !!}
                         <div class="form-text text-muted">
                             {!! trans('lang.app_setting_firebase_database_url_help') !!}
                         </div>
@@ -84,7 +74,7 @@
                 <div class="form-group row col-6">
                     {!! Form::label('firebase_project_id', trans('lang.app_setting_firebase_project_id'), ['class' => 'col-4 control-label text-right']) !!}
                     <div class="col-8">
-                        {!! Form::text('firebase_project_id', setting('firebase_project_id'),  ['class' => 'form-control','placeholder'=>  trans('lang.app_setting_firebase_project_id_placeholder')]) !!}
+                        {!! Form::text('firebase_project_id', setting('firebase_project_id'), ['class' => 'form-control', 'placeholder' => trans('lang.app_setting_firebase_project_id_placeholder')]) !!}
                         <div class="form-text text-muted">
                             {!! trans('lang.app_setting_firebase_project_id_help') !!}
                         </div>
@@ -95,7 +85,7 @@
                 <div class="form-group row col-6">
                     {!! Form::label('firebase_storage_bucket', trans('lang.app_setting_firebase_storage_bucket'), ['class' => 'col-4 control-label text-right']) !!}
                     <div class="col-8">
-                        {!! Form::text('firebase_storage_bucket', setting('firebase_storage_bucket'),  ['class' => 'form-control','placeholder'=>  trans('lang.app_setting_firebase_storage_bucket_placeholder')]) !!}
+                        {!! Form::text('firebase_storage_bucket', setting('firebase_storage_bucket'), ['class' => 'form-control', 'placeholder' => trans('lang.app_setting_firebase_storage_bucket_placeholder')]) !!}
                         <div class="form-text text-muted">
                             {!! trans('lang.app_setting_firebase_storage_bucket_help') !!}
                         </div>
@@ -106,49 +96,40 @@
                 <div class="form-group row col-6">
                     {!! Form::label('firebase_messaging_sender_id', trans('lang.app_setting_firebase_messaging_sender_id'), ['class' => 'col-4 control-label text-right']) !!}
                     <div class="col-8">
-                        {!! Form::text('firebase_messaging_sender_id', setting('firebase_messaging_sender_id'),  ['class' => 'form-control','placeholder'=>  trans('lang.app_setting_firebase_messaging_sender_id_placeholder')]) !!}
+                        {!! Form::text('firebase_messaging_sender_id', setting('firebase_messaging_sender_id'), ['class' => 'form-control', 'placeholder' => trans('lang.app_setting_firebase_messaging_sender_id_placeholder')]) !!}
                         <div class="form-text text-muted">
                             {!! trans('lang.app_setting_firebase_messaging_sender_id_help') !!}
                         </div>
                     </div>
                 </div>
 
-                <!-- firebase_app_id Field -->
+                <!-- Upload Firebase JSON File -->
+                <!-- New Field for JSON File -->
                 <div class="form-group row col-6">
-                    {!! Form::label('firebase_app_id', trans('lang.app_setting_firebase_app_id'), ['class' => 'col-4 control-label text-right']) !!}
+                    {!! Form::label('firebase_credentials', trans('lang.app_setting_firebase_credentials'), ['class' => 'col-4 control-label text-right']) !!}
                     <div class="col-8">
-                        {!! Form::text('firebase_app_id', setting('firebase_app_id'),  ['class' => 'form-control','placeholder'=>  trans('lang.app_setting_firebase_app_id_placeholder')]) !!}
+                        {!! Form::file('firebase_credentials', ['class' => 'form-control']) !!}
                         <div class="form-text text-muted">
-                            {!! trans('lang.app_setting_firebase_app_id_help') !!}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- firebase_measurement_id Field -->
-                <div class="form-group row col-6">
-                    {!! Form::label('firebase_measurement_id', trans('lang.app_setting_firebase_measurement_id'), ['class' => 'col-4 control-label text-right']) !!}
-                    <div class="col-8">
-                        {!! Form::text('firebase_measurement_id', setting('firebase_measurement_id'),  ['class' => 'form-control','placeholder'=>  trans('lang.app_setting_firebase_measurement_id_placeholder')]) !!}
-                        <div class="form-text text-muted">
-                            {!! trans('lang.app_setting_firebase_measurement_id_help') !!}
+                            {!! trans('lang.app_setting_firebase_credentials_help') !!}
                         </div>
                     </div>
                 </div>
 
                 <!-- Submit Field -->
                 <div class="form-group mt-4 col-12 text-right">
-                    <button type="submit" class="btn bg-{{setting('theme_color')}} mx-md-3 my-lg-0 my-xl-0 my-md-0 my-2">
-                        <i class="fas fa-save"></i> {{trans('lang.save')}} {{trans('lang.app_setting_notification')}}
+                    <button type="submit" class="btn bg-{{ setting('theme_color') }} mx-md-3 my-lg-0 my-xl-0 my-md-0 my-2">
+                        <i class="fas fa-save"></i> {{ trans('lang.save') }} {{ trans('lang.app_setting_notification') }}
                     </button>
-                    <a href="{!! route('users.index') !!}" class="btn btn-default"><i class="fas fa-undo"></i> {{trans('lang.cancel')}}</a>
+                    <a href="{!! route('users.index') !!}" class="btn btn-default"><i class="fas fa-undo"></i> {{ trans('lang.cancel') }}</a>
                 </div>
             </div>
             {!! Form::close() !!}
             <div class="clearfix"></div>
         </div>
     </div>
-    @include('layouts.media_modal',['collection'=>null])
+    @include('layouts.media_modal', ['collection' => null])
 @endsection
+
 @push('scripts_lib')
     <!-- iCheck -->
 

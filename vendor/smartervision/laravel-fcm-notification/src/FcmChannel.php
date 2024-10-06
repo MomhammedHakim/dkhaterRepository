@@ -11,11 +11,6 @@ use Illuminate\Notifications\Notification;
 class FcmChannel
 {
     /**
-     * @const The API URL for Firebase
-     */
-    const API_URI = 'https://fcm.googleapis.com/fcm/send';
-
-    /**
      * @var Client
      */
     private $client;
@@ -23,20 +18,38 @@ class FcmChannel
     /**
      * @var string
      */
-    private $apiKey;
+    private $accessToken;
 
     /**
-     * @param  Client  $client
+     * @var string
      */
-    public function __construct(Client $client, $apiKey)
+    private $projectId;
+
+    /**
+     * @param Client $client
+     * @param string $accessToken
+     * @param string $projectId
+     */
+    public function __construct(Client $client, $accessToken, $projectId)
     {
         $this->client = $client;
-        $this->apiKey = $apiKey;
+        $this->accessToken = $accessToken;
+        $this->projectId = $projectId;
     }
 
     /**
-     * @param  mixed  $notifiable
-     * @param  Notification  $notification
+     * Build the dynamic API URI.
+     *
+     * @return string
+     */
+    private function getApiUri()
+    {
+        return 'https://fcm.googleapis.com/v1/projects/' . $this->projectId . '/messages:send';
+    }
+
+    /**
+     * @param mixed $notifiable
+     * @param Notification $notification
      * @return mixed
      */
     public function send($notifiable, Notification $notification)
@@ -45,7 +58,7 @@ class FcmChannel
         $message = $notification->toFcm($notifiable);
 
         if (is_null($message->getTo()) && is_null($message->getCondition())) {
-            if (! $to = $notifiable->routeNotificationFor('fcm', $notification)) {
+            if (!$to = $notifiable->routeNotificationFor('fcm', $notification)) {
                 return;
             }
 
@@ -56,14 +69,13 @@ class FcmChannel
 
         if (is_array($message->getTo())) {
             $chunks = array_chunk($message->getTo(), 1000);
-
             foreach ($chunks as $chunk) {
                 $message->to($chunk);
 
-                $response = $this->client->post(self::API_URI, [
+                $response = $this->client->post($this->getApiUri(), [
                     'headers' => [
-                        'Authorization' => 'key='.$this->apiKey,
-                        'Content-Type'  => 'application/json',
+                        'Authorization' => 'Bearer ' . $this->accessToken,
+                        'Content-Type' => 'application/json',
                     ],
                     'body' => $message->formatData(),
                 ]);
@@ -71,9 +83,9 @@ class FcmChannel
                 array_push($response_array, \GuzzleHttp\json_decode($response->getBody(), true));
             }
         } else {
-            $response = $this->client->post(self::API_URI, [
+            $response = $this->client->post($this->getApiUri(), [
                 'headers' => [
-                    'Authorization' => 'key='.$this->apiKey,
+                    'Authorization' => 'Bearer ' . $this->accessToken,
                     'Content-Type' => 'application/json',
                 ],
                 'body' => $message->formatData(),

@@ -167,6 +167,7 @@ class UserAPIController extends Controller
                 'default_country_code' => '',
                 'enable_otp' => '',
                 'enable_payment_before_appointment_is_completed' => '',
+                'jitsi_meet_link' => '',
             ]
         );
         if (!$settings) {
